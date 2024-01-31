@@ -1,28 +1,17 @@
 import 'package:flutter/material.dart';
-import 'GetTime.dart';
-import 'Dialogparts.dart';
+import 'function.dart';
+import 'widgets.dart';
+import 'main.dart';
+
 class TopScreen extends StatefulWidget {
   const TopScreen({Key? key}) : super(key: key);
 
   @override
-  _TopScreenState createState() => _TopScreenState();
+  TopScreenState createState() => TopScreenState();
 }
 
-class ListItems {
-  String title;
-  IconData icon;
-  TimeOfDay time;
+class TopScreenState extends State<TopScreen> {
 
-  ListItems(this.title, this.icon, this.time);
-}
-
-class _TopScreenState extends State<TopScreen> {
-  
-  List<ListItems> titleLists = [
-    ListItems("タイトル", Icons.star, TimeOfDay.now())
-  ];
-
-  int Count = 0;
   String setting_time_text = "";
 
   @override
@@ -38,10 +27,10 @@ class _TopScreenState extends State<TopScreen> {
         width: 80,
         height: 80,
         child: FloatingActionButton(
+          child: const Icon(Icons.add, size: 50),
           onPressed: (){
-            DialogTenp(context,setting_time_text,Count, setState, titleLists);
+            DialogTenp(context,setting_time_text,titleLists.length + 1, setState, titleLists);
           },
-          child: const Icon(Icons.add,size: 70),
         ),
       ),
       body: Container(
@@ -66,14 +55,16 @@ class _TopScreenState extends State<TopScreen> {
                   ),
                   trailing: Wrap(
                     children: [
-                      Icon(titleLists[index].icon,size: 50),
                       Container(
                         margin: EdgeInsets.only(top: 30, left: 30),
-                        child: Text("${titleLists[index].time.hour}:${titleLists[index].time.minute}", style: TextStyle(fontSize: 18)),
+                        child: Text("${titleLists[index].time?.hour}:${titleLists[index].time?.minute}", style: TextStyle(fontSize: 18)),
                       )
                     ]
                   ),
-                  onTap: (){},
+                  onTap: (){
+                    ChangeDialog(context, titleLists, setState, index);
+                    print(index);
+                  },
                 ),
               ),
             );
@@ -82,9 +73,4 @@ class _TopScreenState extends State<TopScreen> {
       ),
     );
   }
-
-  Future<void> SetTimes(BuildContext context, int count) async{
-    await GetTime(context, count, titleLists);
-  }
-
 }
