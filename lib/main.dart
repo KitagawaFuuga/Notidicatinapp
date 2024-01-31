@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'topscreen.dart';
+import 'function.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+
+final SharedPreferences prefs = SharedPreferences.getInstance() as SharedPreferences;
 void main() {
   runApp(const MyApp());
 }
@@ -18,3 +22,16 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+TimeOfDay? Globaltime;
+
+class ListItems {
+  String title;
+  TimeOfDay? time;
+
+  ListItems(this.title, this.time);
+}
+
+List<ListItems> titleLists = [
+    ListItems("タイトル", TimeOfDay.now())
+];
