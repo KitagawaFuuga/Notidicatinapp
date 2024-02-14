@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'topscreen.dart';
-import 'function.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+var database;
 
 
-final SharedPreferences prefs = SharedPreferences.getInstance() as SharedPreferences;
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  database = await openDatabase(
+    join(await getDatabasesPath(), 'notification.db'),
+    onCreate: (db, version) {
+      return db.execute(
+        'CREATE TABLE notification(id AUTOINCREMENT, title TEXT, time TEXT)'
+      );
+    },
+    version: 1
+  );
+
   runApp(const MyApp());
 }
 
@@ -26,12 +38,19 @@ class MyApp extends StatelessWidget {
 TimeOfDay? Globaltime;
 
 class ListItems {
-  String title;
-  TimeOfDay? time;
+  final int? id;
+  final String title;
+  final String time;
 
-  ListItems(this.title, this.time);
-}
+  ListItems({          this.id, 
+              required this.title,
+              required this.time});
 
-List<ListItems> titleLists = [
-    ListItems("タイトル", TimeOfDay.now())
-];
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'time': time,
+    };
+  }
+} 
